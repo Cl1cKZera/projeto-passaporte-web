@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Passaporte - Gestão de Usuários</title>
+    
+    <!-- Fonte Moderna do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Barra Lateral -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">✈️</div>
+                <div>
+                    <h2>Passaporte</h2>
+                    <p>Corporate System</p>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item active">
+                    <span class="icon">👥</span>
+                    Usuários
+                </a>
+                <a href="perfis.html" class="nav-item">
+                    <span class="icon">📄</span>
+                    Perfis
+                </a>
+                <a href="passaporte.html" class="nav-item">
+                    <span class="icon">🛂</span>
+                    Passaportes
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <h1 class="page-title">Gestão de Usuários</h1>
+                    <p class="page-subtitle">Cadastre e gerencie os atores que terão acesso ao sistema.</p>
+                </div>
+                <div class="user-profile">
+                    <span>Admin</span>
+                    <div class="avatar">A</div>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Formulário de Cadastro -->
+                <section class="card fade-in">
+                    <div class="card-header">
+                        <h3>Novo Usuário</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="user-form" class="form-grid">
+                            <div class="input-group full-width">
+                                <label for="name">Nome Completo</label>
+                                <input type="text" id="name" placeholder="Ex: Maria da Silva" required>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="username">Login (Username)</label>
+                                <input type="text" id="username" placeholder="Ex: maria.silva" required>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="password">Senha</label>
+                                <input type="password" id="password" placeholder="••••••••" required>
+                            </div>
+                            
+                            <div class="input-group full-width">
+                                <label for="role">Papel no Sistema (Role)</label>
+                                <select id="role" required>
+                                    <option value="" disabled selected>Selecione um papel...</option>
+                                    <option value="RH">Recursos Humanos (RH)</option>
+                                    <option value="GERENTE">Gerente</option>
+                                    <option value="MEDICINA_TRABALHO">Medicina do Trabalho</option>
+                                    <option value="SEGURANCA_TRABALHO">Segurança do Trabalho</option>
+                                    <option value="CONTRATADO">Contratado / Candidato</option>
+                                    <option value="ADMINISTRADOR">Administrador</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-actions full-width">
+                                <button type="submit" class="btn btn-primary">
+                                    <span class="btn-text">Salvar Usuário</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Tabela de Usuários -->
+                <section class="card fade-in delay-1">
+                    <div class="card-header">
+                        <h3>Usuários Cadastrados</h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nome</th>
+                                        <th>Login</th>
+                                        <th>Papel</th>
+                                        <th class="text-right">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user-table-body">
+                                    <!-- Conteúdo injetado via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script de integração com a API -->
+    <script src="script.js"></script>
+</body>
+</html>

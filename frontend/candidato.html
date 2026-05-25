@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Passaporte - Painel do Candidato</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .topbar-candidato {
+            background-color: #3730a3;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .passport-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .btn-upload {
+            background-color: #4f46e5;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .btn-upload:hover { background-color: #4338ca; }
+    </style>
+</head>
+<body style="background-color: #f3f4f6; margin: 0; padding: 0;">
+    
+    <header class="topbar-candidato">
+        <div>
+            <h1 style="margin: 0; font-size: 1.5rem;">✈️ Portal do Candidato</h1>
+            <p style="margin: 5px 0 0 0; opacity: 0.8; font-size: 0.9rem;">Acompanhe sua contratação</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="candidate-name">Carregando...</span>
+            <div class="avatar" style="background: rgba(255,255,255,0.2);">?</div>
+            <a href="index.html" style="color: white; font-size: 0.8rem; margin-left: 15px; text-decoration: underline;">Sair</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2 style="color: #1f2937;">Meus Passaportes</h2>
+        <p style="color: #6b7280; margin-bottom: 30px;">Abaixo estão os processos em andamento. Anexe os documentos solicitados pelo RH.</p>
+        
+        <div id="passports-container">
+            <p>Buscando seus dados...</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api';
+        
+        // Simulação: Vamos assumir que o candidato logado é o de ID = 3
+        // No mundo real, isso viria de um token JWT ou Session.
+        let CANDIDATE_ID = 3;
+
+        async function loadCandidate() {
+            try {
+                // Tenta buscar usuários pra achar um candidato e pegar o ID real
+                const resUsers = await fetch(`${API_URL}/users`);
+                const users = await resUsers.json();
+                const candidato = users.find(u => u.role === 'CONTRATADO');
+                if(candidato) {
+                    CANDIDATE_ID = candidato.id;
+                    document.getElementById('candidate-name').innerText = candidato.name;
+                    document.querySelector('.avatar').innerText = candidato.name.charAt(0);
+                } else {
+                    document.getElementById('candidate-name').innerText = "Candidato Teste";
+                }
+
+                loadPassports();
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('candidate-name').innerText = "Visitante";
+            }
+        }
+
+        async function loadPassports() {
+            try {
+                const res = await fetch(`${API_URL}/passaportes`);
+                const passaportesAll = await res.json();
+                
+                // Filtra apenas os do candidato logado
+                const meusPassaportes = passaportesAll.filter(p => p.candidato.id === CANDIDATE_ID);
+                
+                const container = document.getElementById('passports-container');
+                container.innerHTML = '';
+
+                if (meusPassaportes.length === 0) {
+                    container.innerHTML = `<p>Você não tem nenhum passaporte ativo no momento.</p>`;
+                    return;
+                }
+
+                for (const p of meusPassaportes) {
+                    const statusColor = p.status === 'VALIDA' ? '#dcfce7' : '#fef3c7';
+                    const textColor = p.status === 'VALIDA' ? '#166534' : '#92400e';
+                    
+                    let html = `
+                    <div class="passport-card fade-in">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e5e7eb;">
+                            <h3 style="margin: 0; color: #111827;">Passaporte #${p.id} - ${p.perfil.nome}</h3>
+                            <span class="badge" style="background-color: ${statusColor}; color: ${textColor};">Status: ${p.status}</span>
+                        </div>
+                        <div id="tracking-${p.id}">
+                            <p style="font-size: 0.9rem; color: #6b7280;">Carregando tarefas...</p>
+                        </div>
+                    </div>`;
+                    
+                    container.innerHTML += html;
+                    
+                    // Busca a árvore do passaporte
+                    await loadTrackingForCandidate(p.id);
+                }
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('passports-container').innerHTML = `<p style="color:red;">Erro ao buscar passaportes.</p>`;
+            }
+        }
+
+        async function loadTrackingForCandidate(passaporteId) {
+            const trackContainer = document.getElementById(`tracking-${passaporteId}`);
+            try {
+                const resAtiv = await fetch(`${API_URL}/tracking/passaporte/${passaporteId}/atividades`);
+                const atividades = await resAtiv.json();
+
+                if (atividades.length === 0) {
+                    trackContainer.innerHTML = `<p>O RH ainda não configurou suas tarefas.</p>`;
+                    return;
+                }
+
+                let html = '';
+                for (const ativ of atividades) {
+                    html += `
+                    <div style="border: 1px solid #e5e7eb; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
+                        <h4 style="margin: 0 0 10px 0; display: flex; justify-content: space-between;">
+                            <span>📌 ${ativ.nome}</span>
+                            <span style="font-size: 0.8rem; font-weight: normal; color: ${ativ.status === 'VALIDA' ? '#166534' : '#6b7280'};">${ativ.status}</span>
+                        </h4>
+                    `;
+                    
+                    const resTar = await fetch(`${API_URL}/tracking/atividade/${ativ.id}/tarefas`);
+                    const tarefas = await resTar.json();
+                    
+                    if (tarefas.length > 0) {
+                        html += `<div style="display: flex; flex-direction: column; gap: 8px;">`;
+                        for (const tar of tarefas) {
+                            html += `
+                            <div style="background: #f9fafb; padding: 10px 15px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong>✅ ${tar.nome}</strong>
+                                    <span style="font-size: 0.75rem; margin-left: 10px; color: ${tar.status === 'VALIDA' ? '#166534' : '#d97706'}">${tar.status}</span>
+                                </div>
+                                <div>
+                                    ${tar.artefatos && tar.artefatos.length > 0 
+                                        ? `<button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="downloadArtefato(${tar.artefatos[0].id})">⬇️ Baixar</button>
+                                           <button class="btn-upload" style="background-color: #ef4444; margin-left: 5px;" onclick="deleteArtefato(${tar.artefatos[0].id})">🗑️ Excluir</button>`
+                                        : `<button class="btn-upload" onclick="triggerUpload('tarefa', ${tar.id})">📎 Anexar Arquivo</button>`
+                                    }
+                                </div>
+                            </div>
+                            `;
+                            
+                            const resSub = await fetch(`${API_URL}/tracking/tarefa/${tar.id}/subtarefas`);
+                            const subtarefas = await resSub.json();
+                            
+                            if (subtarefas.length > 0) {
+                                html += `<ul style="margin: 0; padding-left: 30px; font-size: 0.9rem; color: #4b5563;">`;
+                                for (const sub of subtarefas) {
+                                    html += `
+                                    <li style="margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; padding: 5px 0;">
+                                        <span>📝 ${sub.nome} <em>(${sub.status})</em></span>
+                                        <div>
+                                            ${sub.artefatos && sub.artefatos.length > 0 
+                                                ? `<button class="btn btn-secondary" style="padding: 2px 6px; font-size: 0.7rem;" onclick="downloadArtefato(${sub.artefatos[0].id})">⬇️ Baixar</button>
+                                                   <button class="btn-upload" style="padding: 2px 6px; font-size: 0.7rem; background-color: #ef4444; margin-left: 5px;" onclick="deleteArtefato(${sub.artefatos[0].id})">🗑️ Excluir</button>`
+                                                : `<button class="btn-upload" style="padding: 2px 6px; font-size: 0.7rem;" onclick="triggerUpload('subtarefa', ${sub.id})">📎 Anexar</button>`
+                                            }
+                                        </div>
+                                    </li>`;
+                                }
+                                html += `</ul>`;
+                            }
+                        }
+                        html += `</div>`;
+                    } else {
+                        html += `<p style="font-size: 0.85rem; color: #9ca3af;">Sem tarefas.</p>`;
+                    }
+                    html += `</div>`;
+                }
+                
+                trackContainer.innerHTML = html;
+
+            } catch (error) {
+                console.error(error);
+                trackContainer.innerHTML = `<p style="color:red;">Erro ao carregar detalhes.</p>`;
+            }
+        }
+
+        // =========================================
+        // UPLOAD E DOWNLOAD
+        // =========================================
+        function triggerUpload(tipo, id) {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.onchange = e => {
+                const file = e.target.files[0];
+                if (file) {
+                    uploadArtefato(tipo, id, file);
+                }
+            };
+            fileInput.click();
+        }
+
+        async function uploadArtefato(tipo, id, file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch(`${API_URL}/artefatos/${tipo}/${id}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Falha no upload do arquivo');
+                }
+
+                alert('Arquivo anexado com sucesso!');
+                loadPassports(); // Recarrega a tela inteira para atualizar os botões
+            } catch (error) {
+                console.error('Erro no upload:', error);
+                alert(`Erro ao anexar arquivo: ${error.message}`);
+            }
+        }
+
+        function downloadArtefato(artefatoId) {
+            window.open(`${API_URL}/artefatos/download/${artefatoId}`, '_blank');
+        }
+
+        async function deleteArtefato(artefatoId) {
+            if (!confirm('Deseja realmente excluir este arquivo? Você terá que enviar um novo documento.')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/artefatos/${artefatoId}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Falha ao excluir o arquivo');
+                }
+
+                loadPassports(); // Recarrega para mostrar o botão de anexar novamente
+            } catch (error) {
+                console.error('Erro ao excluir:', error);
+                alert(`Erro: ${error.message}`);
+            }
+        }
+
+        // Inicia
+        window.addEventListener('DOMContentLoaded', loadCandidate);
+    </script>
+</body>
+</html>

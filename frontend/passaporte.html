@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Passaporte - Gestão de Passaportes</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Barra Lateral -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">✈️</div>
+                <div>
+                    <h2>Passaporte</h2>
+                    <p>Corporate System</p>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">
+                    <span class="icon">👥</span>
+                    Usuários
+                </a>
+                <a href="perfis.html" class="nav-item">
+                    <span class="icon">📄</span>
+                    Perfis
+                </a>
+                <a href="passaporte.html" class="nav-item active">
+                    <span class="icon">🛂</span>
+                    Passaportes
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <h1 class="page-title">Gestão de Passaportes</h1>
+                    <p class="page-subtitle">Crie fluxos de passaporte vinculando candidatos aos seus perfis.</p>
+                </div>
+                <div class="user-profile">
+                    <span>Admin</span>
+                    <div class="avatar">A</div>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Formulário de Cadastro -->
+                <section class="card fade-in">
+                    <div class="card-header">
+                        <h3>Novo Passaporte</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="passaporte-form" class="form-grid">
+                            
+                            <div class="input-group full-width">
+                                <label for="candidato-select">Candidato (Apenas usuários CONTRATADO)</label>
+                                <!-- Esse select será preenchido pelo Javascript chamando a API de usuários! -->
+                                <select id="candidato-select" required>
+                                    <option value="" disabled selected>Carregando candidatos...</option>
+                                </select>
+                            </div>
+                            
+                            <div class="input-group full-width">
+                                <label for="perfil-select">Perfil Base (Cargo/Vaga)</label>
+                                <!-- Esse select será preenchido pelo Javascript chamando a API de perfis! -->
+                                <select id="perfil-select" required>
+                                    <option value="" disabled selected>Carregando perfis...</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-actions full-width">
+                                <button type="submit" class="btn btn-primary">
+                                    <span class="btn-text">Criar Passaporte</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Tabela de Passaportes -->
+                <section class="card fade-in delay-1">
+                    <div class="card-header">
+                        <h3>Passaportes Ativos</h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Candidato</th>
+                                        <th>Perfil</th>
+                                        <th>Status</th>
+                                        <th>Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="passaporte-table-body">
+                                    <!-- Conteúdo injetado via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Acompanhamento (Invisível por padrão) -->
+    <div id="tracking-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+        <div class="modal-content" style="background: white; width: 80%; max-width: 800px; margin: 5% auto; padding: 20px; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                <h2 id="modal-title">Acompanhamento do Passaporte</h2>
+                <button onclick="closeTrackingModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            
+            <div id="tracking-content" style="margin-top: 20px;">
+                <!-- O Javascript vai desenhar o Checklist aqui dentro -->
+                <p>Carregando prancheta...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de integração com a API para Passaportes -->
+    <script src="passaporte.js"></script>
+</body>
+</html>

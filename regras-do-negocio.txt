@@ -1,0 +1,91 @@
+Product Backlog: Sistema Passaporte
+Objetivo: Desenvolvimento de plataforma para geração de Workflows multipropósito
+Versão: 1.0
+
+Glossário
+PASSAPORTE: um Workflow criado especificamente para acompanhamento passo a passo do processo de contratação de um novo colaborador ou evolução funcional de um colaborador já cadastrado.
+
+PERFIL DE PASSAPORTE: tipo de workflow criado para a emissão de passaportes de uma mesma categoria profissional, como por exemplo, MOTORISTA 1, MOTORISTA 2, ALMOXARIFE, PORTEIRO, RECEPCIONISTA etc.
+
+USUÁRIO: são os atores que terão acesso direto ao sistema.
+    1. RH – Usuário DO RH responsável por manter uma PERFIL DE PASSAPORTE e por manter os PASSAPORTES dos candidatos à vaga.
+    2. Gerente – usuário responsável por contratações em um determinado setor, o qual poderá atualizar um passaporte, efetuando o registro de dados e o upload de arquivos e/ou atualizando o status quando necessário.
+    3. Medicina do Trabalho – usuário responsável por atualizar documentos relativos aos exames, admissionais ou periódicos, dos passaportes. Poderá registrar dados e/ou atualizar o status quando necessário.
+    4. Segurança do Trabalho – usuário responsável por atualizar documentos relativos aos processos de segurança do trabalho, como elaboração de planos de prevenção e segurança, treinamentos, notificações, distribuição de EPI’s etc.
+    5. Contratado – usuário que está sendo contratado pela empresa. Poderá fazer o upload de documentos pessoais e o registro de dados em tarefas e subtarefas específicas para tal papel. Deverá ser identificado por uma chave única que dará acesso ao seu PASSAPORTE.
+    6. Administrador – usuário que atuará como administrador central do sistema.
+
+
+ATIVIDADE: uma ação macro que deverá ser cumprida de forma atômica para a execução do fluxo como um todo. Uma atividade poderá ser dividida em Tarefas e Subtarefas, de acordo com a necessidade dos responsáveis pelo PASSAPORTE.
+
+TAREFA: porção maior de uma atividade, com prazo e com responsabilidade atribuída a um ator do sistema. Poderá ser dividida em subtarefas e ter artefatos vinculados a esta tarefa.
+
+SUBTAREFA: porção menor de uma tarefa, com prazo e responsabilidade atribuída a um ator do sistema. Poderá ter artefatos vinculados a esta subtarefa.
+
+Atividades, Tarefas e Subtarefas deverão ser definidas na PERFIL DE PASSAPORTE.
+
+ARTEFATO: documento de qualquer natureza que deverá ser vinculado a uma tarefa ou subtarefa, podendo ou não ser eletronicamente assinado.
+
+ASSINATURA ELETRÔNICA: vinculação de um token gerado eletronicamente pelo sistema que certificará que uma tarefa, subtarefa ou artefato foi devidamente verificado por um usuário autorizado.
+
+STATUS DE UM PASSAPORTE, ATIVIDADE, TAREFA OU SUBTAREFA:
+VÁLIDA 	þ	a ação foi finalizada e validada por um responsável
+ABERTA	´	não foram completados os requisitos para a validação da ação
+INVÁLIDA	ý	a ação foi sinalizada e considerada inválida por um usuário 	responsável
+CANCELADA	¡	a ação foi cancelada por um usuário responsável
+Obs. 1: o que tornaria um PASSAPORTE, ATIVIDADE, TAREFA ou SUBTAREFA inválidos: Documentação ilegível, Documentação incorreta, Documentação corrompida, Documentação incompleta, outros motivos?
+Obs. 2: o que motiva o cancelamento de um PASSAPORTE, ATIVIDADE, TAREFA ou SUBTAREFA: Prazo de Preenchimento de tarefas?
+
+Histórias
+
+ADMINISTRAÇÃO
+HSadm101: Enquanto administrador do sistema, desejo poder gerenciar usuários da solução as categorias de usuários e suas permissões.
+HSadm102: Enquanto administrador do sistema, desejo poder gerenciar os tipos de arquivos que poderão ser armazenados no repositório da solução (PDF, PNG, JPG etc.).
+HSadm103: Enquanto administrador do sistema, desejo poder importar determinados conjuntos de dados de soluções externas.
+HSadm104: Enquanto administrador do sistema, desejo que a ferramenta apresente uma política de segurança permitindo que cada categoria de usuário acesse um determinado passaporte apenas nas atividades, tarefas e subtarefas atribuídas especificamente a ele.
+PERFIS DE PASSAPORTE
+HSrh201: Enquanto responsável do RH, desejo poder criar Perfis de Passaporte, estabelecendo todo o fluxo de execução de um processo de contratação ou evolução funcional.
+HSrh202: Enquanto responsável do RH, desejo poder atualizar uma Perfil de Passaporte, gerando uma nova versão de Perfil, permitindo manter o histórico de Perfis e de Passaportes. Desejo ainda que, após ser criado um Passaporte de um determinado Perfil, essa categoria não poderá mais ser alterada, mas sim criada uma nova versão.
+HSrh203: Enquanto responsável do RH, desejo poder desabilitar a criação de passaportes para um determinado Perfil de Passaporte. Esses perfis poderão ser habilitados novamente.
+HSrh204: Enquanto responsável do RH, desejo poder manter Atividades em um Perfil de Passaporte, podendo ajustar a ordem de execução dessas atividades enquanto o Perfil de Passaporte não for “publicado”.
+HSrh205: Enquanto responsável do RH, desejo poder manter tarefas em um Perfil de Passaporte, podendo ajustar a ordem de execução dessas tarefas em uma atividade enquanto o Perfil não for publicado.
+HSrh206: Enquanto responsável do RH, desejo poder manter subtarefas em um Perfil de Passaporte, podendo ajustar a ordem de execução dessas subtarefas em uma tarefa enquanto o Perfil não for publicado.
+HSrh207: Enquanto responsável do RH, desejo poder publicar um Perfil de Passaporte, permitindo que passaportes sejam criados para esse perfil. Um perfil pode ser desativado, mantendo o histórico de todos os passaportes criados.
+HSrh208: Enquanto responsável do RH, desejo poder vincular categorias de arquivos a uma atividade em um Perfil de Passaporte não publicado.
+HSrh209: Enquanto responsável do RH, desejo poder vincular um tipo de usuário responsável a uma atividade em um Perfil de Passaporte não publicado.
+HSrh210: Enquanto responsável do RH, desejo poder vincular um categorias de arquivo a uma tarefa em um Perfil de Passaporte não publicado.
+HSrh211: Enquanto responsável do RH, desejo poder vincular um tipo de usuário responsável a uma tarefa em um Perfil de Passaporte não publicado.
+HSrh212: Enquanto responsável do RH, desejo poder vincular categorias de arquivos a uma subtarefa em um Perfil de Passaporte não publicado.
+HSrh213: Enquanto responsável do RH, desejo poder vincular um tipo de usuário responsável a uma subtarefa em uma CP.
+HSrh214: Enquanto responsável do RH, desejo poder criar componentes reutilizáveis de elementos do Perfil de Passaporte (Atividade, Tarefas, Subtarefas, Workflow, Subworkflow).
+HSrh215: Enquanto responsável do RH, desejo poder manter as categorias de documentos necessárias e sinalizar quais devem apontar possibilidade de reuso e data de validade, como por exemplo, CNH, Exames Periódicos etc.
+PASSAPORTES
+HSrh301: Enquanto responsável do RH, desejo poder criar um passaporte de um determinado Perfil, vinculando um usuário da categoria CANDIDATO.
+HSrh302: Enquanto responsável do RH, desejo poder vincular um responsável específico por uma ATIVIDADE em um PASSAPORTE.
+HSrh303: Enquanto responsável do RH, desejo poder vincular um responsável específico por uma TAREFA em um PASSAPORTE.
+HSrh304: Enquanto responsável do RH, desejo poder vincular um responsável específico por uma SUBTAREFA em um PASSAPORTE.
+HSrh305: Enquanto responsável do RH, desejo poder efetuar o download de um arquivo vinculado a uma ATIVIDADE em um PASSAPORTE.
+HSrh306: Enquanto responsável do RH, desejo poder efetuar o download de um arquivo vinculado a uma TAREFA em um PASSAPORTE.
+HSrh307: Enquanto responsável do RH, desejo poder efetuar o download de um arquivo vinculado a uma SUBTAREFA em um PASSAPORTE.
+HSrh308: Enquanto responsável do RH, desejo poder vincular MENSAGENS a uma ATIVIDADE em um PASSAPORTE.
+HSrh309: Enquanto responsável do RH, desejo poder vincular MENSAGENS a uma TAREFA em um PASSAPORTE.
+HSrh310: Enquanto responsável do RH, desejo poder vincular MENSAGENS a uma SUBTAREFA em um PASSAPORTE.
+HSrh311: Enquanto responsável do RH, desejo poder validar ou invalidar um DOCUMENTO em um arquivo em uma ATIVIDADE, TAREFA ou SUBTAREFA, justificando o motivo da invalidação. Os envolvidos com o documento invalidado deverão ser notificados.
+HSrh312: Enquanto responsável do RH, desejo poder sinalizar o status de uma tarefa, subtarefa ou atividade.
+HSrh313: Enquanto responsável do RH, desejo poder consultar o status de um passaporte. Gostaria que as ATIVIDADES, TAREFAS e SUBTAREFAS aparecessem em um dashboard com os símbolos e significados especificados no glossário.
+HScd314: Enquanto candidato, desejo poder vincular um arquivo ou manter dados em uma ATIVIDADE em meu passaporte ativo. 
+HScd315: Enquanto candidato, desejo poder vincular um arquivo ou manter dados em uma TAREFA em meu passaporte ativo. 
+HScd316: Enquanto candidato, desejo poder vincular um arquivo ou manter dados em uma SUBTAREFA em meu passaporte ativo.
+HScd317: Enquanto candidato, desejo poder consultar o status de meu PASSAPORTE, verificando o andamento de cada tarefa ou subtarefa, e respectivamente, atividade.
+HSrh318: Enquanto responsável do RH, desejo ser notificado quando determinados documentos do passaporte estiverem próximos do vencimento, como exames periódicos, CNH, dentre outros)
+HScd319: Enquanto candidato, desejo poder consultar e fazer o download de documentos disponíveis em meus passaportes desativados
+HScd320: Enquanto candidato, desejo poder vincular documentos já existentes (quando possível) na base de dados da plataforma (por exemplo, RG, CPF, Certidão de Casamento, Certidão de Nascimento de dependentes etc.).
+
+
+VERIFICAR A QUESTÃO DE CRIAÇÃO DE TREINAMENTOS E CRIAÇÃO DE INSTRUÇÃO DE TRABALHOS 
+
+POSSÍVEL CRIAÇÃO DE DATA DE VALIDADE DE TREINAMENTO
+
+IDEM PARA EXAMES MÉDICOS
+
+Treinamento de Integração, Instruções de Trabalho, Entrega de EPI's

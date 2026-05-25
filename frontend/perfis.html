@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Passaporte - Gestão de Perfis</title>
+    
+    <!-- Fonte Moderna do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Barra Lateral -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">✈️</div>
+                <div>
+                    <h2>Passaporte</h2>
+                    <p>Corporate System</p>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">
+                    <span class="icon">👥</span>
+                    Usuários
+                </a>
+                <a href="perfis.html" class="nav-item active">
+                    <span class="icon">📄</span>
+                    Perfis
+                </a>
+                <a href="passaporte.html" class="nav-item">
+                    <span class="icon">🛂</span>
+                    Passaportes
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <h1 class="page-title">Gestão de Perfis</h1>
+                    <p class="page-subtitle">Visualize os moldes de passaporte cadastrados na plataforma.</p>
+                </div>
+                <div class="user-profile">
+                    <span>Admin</span>
+                    <div class="avatar">A</div>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Tabela de Perfis -->
+                <section class="card fade-in" style="grid-column: span 12;">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>Perfis de Passaporte (Moldes Base)</h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nome do Perfil</th>
+                                        <th>Descrição</th>
+                                        <th>Versão</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="perfis-table-body">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; padding: 20px;">Carregando perfis...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api';
+
+        async function loadPerfis() {
+            try {
+                const response = await fetch(`${API_URL}/perfis`);
+                const perfis = await response.json();
+                
+                const tbody = document.getElementById('perfis-table-body');
+                tbody.innerHTML = '';
+                
+                if(perfis.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px;">Nenhum perfil encontrado.</td></tr>`;
+                    return;
+                }
+
+                perfis.forEach(perfil => {
+                    const statusBadge = perfil.ativo 
+                        ? '<span class="badge" style="background-color: #dcfce7; color: #166534;">Ativo</span>'
+                        : '<span class="badge" style="background-color: #fee2e2; color: #991b1b;">Inativo</span>';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>#${perfil.id}</td>
+                            <td style="font-weight: 600;">${perfil.nome}</td>
+                            <td>${perfil.descricao}</td>
+                            <td>v${perfil.versao}.0</td>
+                            <td>${statusBadge}</td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Erro ao buscar perfis:', error);
+                document.getElementById('perfis-table-body').innerHTML = `
+                    <tr><td colspan="5" style="text-align: center; color: red;">Erro ao conectar com a API</td></tr>
+                `;
+            }
+        }
+
+        // Carrega ao abrir a tela
+        window.addEventListener('DOMContentLoaded', loadPerfis);
+    </script>
+</body>
+</html>
